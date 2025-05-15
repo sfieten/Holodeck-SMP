@@ -29,7 +29,6 @@ import org.holodeckb2b.bdxr.smp.server.svc.SMLIntegrationService;
 import org.holodeckb2b.commons.util.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -39,6 +38,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import eu.peppol.schema.pd.businesscard._20161123.IdentifierType;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
@@ -82,6 +82,15 @@ public class BusinessCardController {
 		p.setName(bc.getName());
 		p.setCountry(bc.getCountryCode());
 		p.setAddressInfo(bc.getGeographicalInformation());
+		if (bc.getRegistrationDate() != null)
+			p.setFirstRegistration(bc.getRegistrationDate().toGregorianCalendar().toZonedDateTime().toLocalDate());
+		StringBuilder additionalIds = new StringBuilder();
+		for(IdentifierType id : bc.getIdentifier()) {
+			if (!Utils.isNullOrEmpty(id.getScheme()))
+				additionalIds.append(id.getScheme()).append("::");
+			additionalIds.append(id.getValue()).append(',');
+		}
+		p.setAdditionalIds(additionalIds.length() > 0 ? additionalIds.toString() : null);
 		log.trace("Updating business card info");
 		p = participants.save(p);
 		log.debug("Saved participant data");
@@ -102,6 +111,7 @@ public class BusinessCardController {
 	}
 	
 	@DeleteMapping
+	@ResponseStatus(HttpStatus.ACCEPTED)
 	public void deleteBusinessCard(@PathVariable("partID") String partID) {
 		log.debug("Request to update the Business Card info for Participant {}", partID);
 		IdentifierE pid;

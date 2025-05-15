@@ -16,22 +16,26 @@
  */
 package org.holodeckb2b.bdxr.smp.server.db.entities;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Index;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.validation.Valid;
+
+import org.holodeckb2b.bdxr.smp.server.datamodel.Participant;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.Index;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import jakarta.validation.Valid;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.holodeckb2b.bdxr.smp.server.datamodel.Participant;
 
 /**
  * Is the JPA entity for {@link Participant}.
@@ -41,6 +45,7 @@ import org.holodeckb2b.bdxr.smp.server.datamodel.Participant;
 @Entity(name = "Participant")
 @Table(indexes = {@Index(columnList = "name")})
 @Getter
+@Setter
 @NoArgsConstructor
 public class ParticipantE implements Participant {
 
@@ -49,36 +54,38 @@ public class ParticipantE implements Participant {
 	protected long		oid;
 
 	@Embedded
-	@Setter
 	@Valid
 	protected IdentifierE	id;
 
 	@Column
-	@Setter
 	protected String	name;
 	
 	@Column(length=2)
-	@Setter
 	protected String	country;
 
 	@Column
-	@Setter
 	protected String	contactInfo;
 
 	@Column(length=1024)
-	@Setter
 	protected String	addressInfo;
+	
+	@Column
+	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+	protected LocalDate firstRegistration;
+	
+	@Column(length=1024)
+	protected String	additionalIds;
 
 	@Column
-	@Setter
 	protected Boolean	isRegisteredSML;
 
 	@Column
-	@Setter
 	protected Boolean	publishedInDirectory;
+	
+	@Column
+	protected String	migrationCode;
 
 	@OneToMany(mappedBy = "participant", cascade = CascadeType.ALL, orphanRemoval = true)
-	@Setter
 	protected List<ServiceMetadataBindingE>	bindings = new ArrayList<>();
 
 	@Override

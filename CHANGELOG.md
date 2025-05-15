@@ -2,6 +2,19 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.1.0
+##### 
+### Added 
+* Support for migration of Participants between Service Providers (Peppol only). Migration is supported in both the manangement UI as well as the REST API.
+* Ability to set the first registration date and additional identifiers of a Participant. When the SMP server is integrated with a directory service these are published to the directory as well. These data elements are both supported in the management UI as well as the REST API
+* Configuration option in the management API to indicate whether new Participant registrations should automatically be added in the SML as well (if the SMP is registered with an SML)  
+
+### Changed
+* Availability of the REST API is now automatically determined and does not require defining the _api.enabled_ configuration property
+* Updated to version 3.3.10 of the Spring Boot framework
+* Updated to Bootstrap version 5.3.3
+* Minimum Java version to run the SMP server is now 17 
+
 ## 2.0.3
 ##### 2025-01-06
 ### Fixed
